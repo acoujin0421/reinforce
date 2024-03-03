@@ -1,1 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>강화 게임</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f0f0f0;
+    }
+    .game-container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        text-align: center;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    .levels div {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        margin: 5px;
+        background-color: #ddd;
+        color: #333;
+        border-radius: 50%;
+        font-weight: bold;
+    }
+    .active {
+        background-color: #007bff !important;
+        color: #fff !important;
+    }
+    #messageBox {
+        margin-top: 20px;
+        color: #007bff;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+<div class="game-container">
+    <h1>강화 게임</h1>
+    <p id="attempt">1차 도전</p>
+    <button id="enhanceButton">강화 도전하기</button>
+    <button id="resetButton">초기화</button>
+    <div id="messageBox"></div>
+    <div class="levels">
+        <!-- JavaScript를 통해 도형이 추가됩니다 -->
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const enhanceButton = document.getElementById('enhanceButton');
+    const resetButton = document.getElementById('resetButton');
+    const messageBox = document.getElementById('messageBox');
+    const levelsContainer = document.querySelector('.levels');
+    let currentLevel = 1;
+    let attempt = 1;
 
+    const enhancementChances = [0, 80, 70, 60, 50, 30, 10, 3, 1, 0.5]; // 인덱스 0은 사용하지 않음
+
+    function updateLevelsDisplay() {
+        levelsContainer.innerHTML = '';
+        for (let i = 1; i <= 10; i++) {
+            const levelDiv = document.createElement('div');
+            levelDiv.textContent = i;
+            levelDiv.className = i === currentLevel ? 'active' : '';
+            levelsContainer.appendChild(levelDiv);
+        }
+    }
+
+    function enhance() {
+        const chance = enhancementChances[currentLevel];
+        const random = Math.random() * 100;
+        if (random < chance) {
+            currentLevel++;
+            messageBox.textContent = "축하합니다. 강화에 성공하였습니다!";
+            if (currentLevel > 10) {
+                currentLevel = 10; // 최대 레벨
+                alert("최고 레벨에 도달했습니다!");
+            }
+        } else {
+            currentLevel = 1;
+            attempt++;
+            alert("아쉽네요. 강화에 실패하였습니다.");
+        }
+        updateAttemptDisplay();
+        updateLevelsDisplay();
+    }
+
+    function resetGame() {
+        currentLevel = 1;
+        attempt = 1;
+        messageBox.textContent = "";
+        updateAttemptDisplay();
+        updateLevelsDisplay();
+    }
+
+    function updateAttemptDisplay() {
+        const attemptElement = document.getElementById('attempt');
+        attemptElement.textContent = `${attempt}차 도전`;
+    }
+
+    enhanceButton.addEventListener('click', function() {
+        messageBox.textContent = "강화 수행중입니다...";
+        setTimeout(enhance, 1000); // 1초 후 강화 실행
+    });
+
+    resetButton.addEventListener('click', resetGame);
+
+    updateLevelsDisplay(); // 초기 레벨 디스플레이 업데이트
+});
+</script>
+</body>
+</html>
